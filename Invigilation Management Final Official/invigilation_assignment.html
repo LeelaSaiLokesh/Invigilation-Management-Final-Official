@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Invigilation Assignment</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="navbar">Generate Invigilation Schedule</div>
+  <a href="dashboard_admin.html" class="back-buttonn">Back to Admin Dashboard</a>
+
+  <div class="container">
+    <h2>Click below to generate dummy Schedule</h2>
+    <button class="btn" onclick="generate()">Generate</button>
+    <ul id="assignments"></ul>
+  </div>
+  <script>
+    function generate() {
+      const assignments = ["Dr. A. Sharma - 20th April - Morning", "Prof. R. Verma - 21st April - Afternoon"];
+      const ul = document.getElementById("assignments");
+      ul.innerHTML = "";
+      assignments.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        ul.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>

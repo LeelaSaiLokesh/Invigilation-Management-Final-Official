@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Faculty Management</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    body {
+      background-color: #e0f7fa;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .navbar {
+      width: 100%;
+      background-color: #0077b6;
+      color: white;
+      padding: 1.5rem;
+      font-size: 1.8rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: static;
+    }
+
+    .navbar-title {
+      position: relative;
+    }
+
+    .back-button {
+      position: absolute;
+      left: 20px;
+      background-color: #0077b6;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 1rem;
+    }
+    .back-button:hover{
+      background-color: white;
+      color: #0077b6;
+      transition: ease-in;
+    }
+
+    .container {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      background-color: white;
+      padding: 2.5rem;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 800px;
+      height: 400px;
+      overflow-y: auto;
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #0077b6;
+      color: white;
+    }
+
+    .delete-btn {
+      background-color: #f44336;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .form-container {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .form-container h3 {
+      margin-bottom: 10px;
+    }
+
+    .form-container input {
+      margin: 10px 0;
+      padding: 8px;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .form-container button {
+      background-color: #0077b6;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    #show-form-btn {
+      background-color: #0077b6;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    .navbar {
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+      <a href="dashboard_admin.html" class="back-button">Back to Admin Dashboard</a>  
+    <span class="navbar-title">Faculty Management</span>
+  </div>
+
+  <div class="container">
+    <h2>Faculty List</h2>
+    <table id="faculty-table">
+      <thead>
+        <tr><th>Name</th><th>Department</th><th>Email</th><th>Action</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <button id="show-form-btn">+ Add Faculty</button>
+
+    <div class="form-container" id="form-container">
+      <h3>Add New Faculty</h3>
+      <form id="faculty-form">
+        <label for="faculty-name">Name:</label>
+        <input list="faculty-names" id="faculty-name" name="faculty-name" required />
+        <datalist id="faculty-names"></datalist>
+
+        <label for="department">Department:</label>
+        <input type="text" id="department" name="department" required />
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+
+        <button type="submit">Add Faculty</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/faculty.js"></script>
+</body>
+</html>

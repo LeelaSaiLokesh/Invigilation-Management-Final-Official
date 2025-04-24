@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="css/login.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      background: linear-gradient(135deg, #f0f4ff, #d6e0f5);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .navbar {
+      padding: 20px;
+      background-color: #0077b6;
+      color: white;
+      font-size: 24px;
+      text-align: center;
+    }
+
+    .login-container {
+      flex: 1;
+      display: flex;
+      margin-bottom: 40px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .login-wrapper {
+      display: flex;
+      align-items: center;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      max-width: 1000px;
+      width: 90%;
+    }
+
+    .illustration {
+      flex: 1;
+      padding-right: 30px;
+    }
+
+    .illustration img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .login-card {
+      flex: 1;
+      padding: 20px;
+    }
+
+    .login-icon {
+      font-size: 50px;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    .subtext {
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #0077b6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #45a049;
+    }
+
+    @media (max-width: 768px) {
+      .login-wrapper {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+      }
+      .illustration {
+        padding: 0;
+        margin-bottom: 20px;
+      }
+    }
+
+    /* Toast style */
+    .toast {
+      position: fixed;
+      bottom: 40px;
+      left: 150px;
+      transform: translateX(-50%);
+      background-color: #ff4d4d;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease-in-out;
+      z-index: 999;
+    }
+
+    .toast.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .back-button {
+  position: absolute;
+  left: 20px;
+  background-color: #0077b6;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 1rem;
+}
+.back-button:hover{
+  background-color: white;
+  color: #0077b6;
+  transition: ease-in;
+}
+  </style>
+</head>
+<body>
+  <div class="navbar">Invigilation Management System
+    <a href="index.html" class="back-button"><i class="fas fa-arrow-left"></i> Back</a>
+
+
+  </div>
+
+  <div class="login-container">
+    <div class="login-wrapper">
+      <div class="illustration">
+        <img src="assets/loginillustration.avif" alt="Illustration">
+      </div>
+      <div class="login-card">
+        <div class="login-icon">🔐</div>
+        <h2>Welcome Back</h2>
+        <p class="subtext">Please enter your credentials</p>
+
+        <input type="text" id="username" placeholder="Username" class="form-control">
+        <input type="password" id="password" placeholder="Password" class="form-control">
+
+        <button class="btn" onclick="login()">Login</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Invalid username or password!</div>
+
+  <script>
+    const credentials = {
+      admin123: { password: "adminpass", role: "admin" },
+      faculty123: { password: "facultypass", role: "faculty" }
+    };
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3000);
+    }
+
+    function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (credentials[username] && credentials[username].password === password) {
+        const role = credentials[username].role;
+        window.location.href = role === "admin" ? "dashboard_admin.html" : "dashboard_faculty.html";
+      } else {
+        showToast("Invalid username or password!");
+      }
+    }
+  </script>
+</body>
+</html>

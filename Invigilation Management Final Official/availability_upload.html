@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Faculty Availability Checker</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+    body {
+      background: linear-gradient(to right, #e0f7fa, #ffffff);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      position: relative;
+      padding-top: 100px;
+    }
+
+    .navbar {
+      width: 100%;
+      background-color: #0077b6;
+      color: white;
+      padding: 1.5rem;
+      font-size: 1.8rem;
+      font-weight: 600;
+      text-align: center;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+
+    .container {
+      background-color: white;
+      padding: 2.5rem;
+      border-radius: 15px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 90%;
+      max-width: 600px;
+    }
+
+    h2 {
+      color: #0077b6;
+      margin-bottom: 2rem;
+      font-size: 1.6rem;
+      font-weight: 600;
+    }
+    .back-button {
+  position: absolute;
+  left: 20px;
+  background-color: #0077b6;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 1rem;
+}
+.back-button:hover{
+  background-color: white;
+  color: #0077b6;
+  transition: ease-in;
+}
+    label {
+      display: block;
+      margin-top: 1.5rem;
+      font-weight: 600;
+      color: #333;
+      text-align: left;
+    }
+
+    select, input[type="file"], input[type="number"], input[type="date"], input[type="time"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      max-width: 280px;
+      background-color: #0077b6;
+      color: white;
+      padding: 0.9rem 1.6rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      margin: 2rem auto 0;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #0077b6;
+    }
+
+    #result {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #eef6ff;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+      line-height: 1.6;
+    }
+
+    #toast-container {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 9999;
+    }
+
+    .toast {
+      background-color: #00b4d8;
+      color: white;
+      padding: 14px 20px;
+      margin-top: 10px;
+      border-radius: 8px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+      opacity: 0;
+      animation: slideIn 0.5s forwards, fadeOut 0.5s 3s forwards;
+      font-size: 0.95rem;
+    }
+
+    .toast.error {
+      background-color: #e63946;
+    }
+
+    .toast.success {
+      background-color: #43aa8b;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+      to { opacity: 0; transform: translateX(100%); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">       <a href="dashboard_admin.html" class="back-button">Back to Admin Dashboard</a>  Faculty Availability Checker</div>
+
+  <div class="container">
+    <h2>Check Faculty Availability</h2>
+
+    <input type="file" id="fileInput" />
+
+    <label for="dateInput">Date:</label>
+    <input type="date" id="dateInput" min="<?= new Date().toISOString().split('T')[0] ?>" />
+
+    <label for="startTime">Start Time:</label>
+    <input type="time" id="startTime" />
+
+    <label for="endTime">End Time:</label>
+    <input type="time" id="endTime" />
+
+    <label for="facultyCount">Number of Faculty Required:</label>
+    <input type="number" id="facultyCount" min="1" />
+
+    <label for="examYear">Examination Year:</label>
+    <select id="examYear">
+      <option value="2">2nd Year</option>
+      <option value="3">3rd Year</option>
+      <option value="4">4th Year</option>
+    </select>
+
+    <button class="btn" onclick="checkAvailability()">Check Availability</button>
+
+    <div id="result"></div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script>
+    let facultyData = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('dateInput').setAttribute('min', today);
+    });
+
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        facultyData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+        showToast("Excel file loaded successfully!", "success");
+      };
+      reader.readAsArrayBuffer(e.target.files[0]);
+    });
+
+    function checkAvailability() {
+      const dateInput = document.getElementById('dateInput').value;
+      const startTimeInput = document.getElementById('startTime').value;
+      const endTimeInput = document.getElementById('endTime').value;
+      const requiredFacultyCount = parseInt(document.getElementById('facultyCount').value);
+      const examYear = document.getElementById('examYear').value;
+
+      if (!dateInput || !startTimeInput || !endTimeInput || !requiredFacultyCount || !examYear || facultyData.length === 0) {
+        showToast("Please fill all fields and upload the Excel file.", "error");
+        return;
+      }
+
+      const date = new Date(dateInput);
+      const dayIndex = date.getDay(); // 0 = Sunday, 1 = Monday, etc.
+      const dayMap = { 1: "MON", 2: "TUE", 3: "WED", 4: "THUR", 5: "FRI" };
+      const day = dayMap[dayIndex];
+
+      if (!day) {
+        showToast("Only Monday to Friday are allowed.", "error");
+        return;
+      }
+
+      const startTime = new Date(`1970-01-01T${startTimeInput}:00`);
+      const endTime = new Date(`1970-01-01T${endTimeInput}:00`);
+
+      const headerRow = facultyData[0];
+      const dayStart = headerRow.indexOf(day);
+      const periods = [
+        { period: 1, start: "09:00", end: "10:30" },
+        { period: 2, start: "10:30", end: "12:00" },
+        { period: 3, start: "13:30", end: "15:00" },
+        { period: 4, start: "15:00", end: "16:30" }
+      ];
+
+      let availableFaculty = [];
+ 
+      for (let i = 1; i < facultyData.length; i++) {
+        const row = facultyData[i];
+        const facultyName = row[0];
+        let facultyYear = null;
+
+        for (let j = 1; j <= 5; j++) {
+          if (parseInt(row[j]) === parseInt(examYear)) {
+            facultyYear = examYear;
+            break;
+          }
+        }
+
+        if (facultyYear === examYear) {
+          periods.forEach(period => {
+            const periodStart = new Date(`1970-01-01T${period.start}:00`);
+            const periodEnd = new Date(`1970-01-01T${period.end}:00`);
+
+            if (
+              (startTime < periodEnd && endTime > periodStart) &&
+              (!row[dayStart + period.period - 1] || row[dayStart + period.period - 1] === "")
+            ) {
+              availableFaculty.push(facultyName);
+            }
+          });
+        }
+      }
+
+      availableFaculty = [...new Set(availableFaculty)].slice(0, requiredFacultyCount+1);
+      const resultDiv = document.getElementById("result");
+
+      if (availableFaculty.length > 0) {
+        resultDiv.innerHTML = `<strong>Available faculty for ${examYear} Year on ${day}:</strong><br><br>${availableFaculty.join("<br>")}`;
+        showToast("Faculty availability found!", "success");
+      } else {
+        resultDiv.innerHTML = `<strong>No faculty available for ${examYear} Year on ${day}.</strong>`;
+        showToast("No faculty available for selected inputs.", "error");
+      }
+    }
+
+    function showToast(message, type = "success") {
+      const container = document.getElementById("toast-container");
+      const toast = document.createElement("div");
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 4000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background: linear-gradient(to right, #e0f7fa, #ffffff);
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+body::before,
+body::after,
+.background-shapes::before,
+.background-shapes::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(0, 150, 199, 0.1);
+  z-index: -1;
+  animation: float 6s ease-in-out infinite alternate;
+}
+
+body::before {
+  width: 250px;
+  height: 250px;
+  top: 10%;
+  left: -100px;
+}
+
+body::after {
+  width: 200px;
+  height: 200px;
+  bottom: 15%;
+  right: -80px;
+}
+
+
+
+.navbar {
+  width: 100%;
+  background-color: #0077b6;
+  color: white;
+  padding: 1.5rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.login-container {
+  margin-top: 8rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.login-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+.login-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #0077b6;
+}
+
+h2 {
+  margin-bottom: 0.5rem;
+  color: #0077b6;
+}
+
+.subtext {
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #0077b6;
+  text-align: left;
+}
+
+select {
+  width: 100%;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.btn {
+  background-color: #0077b6;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.6rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.btn:hover {
+  background-color: #0077b6;
+}
